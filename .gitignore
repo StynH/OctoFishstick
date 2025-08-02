@@ -1,19 +1,58 @@
-CMakeLists.txt.user
-CMakeCache.txt
-CMakeFiles
-CMakeScripts
-Testing
-Makefile
-cmake_install.cmake
-install_manifest.txt
+# === C build artifacts ===
+*.o
+*.obj
+*.so
+*.a
+*.out
+*.exe
+*.dll
+*.dylib
+*.gcno
+*.gcda
+*.gch
+*.pch
+
+# === CMake ===
+/build/
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+/Makefile
 compile_commands.json
 CTestTestfile.cmake
-_deps
-CMakeUserPresets.json
+Testing/
 
-# CLion
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#cmake-build-*
+# === Editor crap ===
+*~
+.*.swp
+.*.swo
+.*.swx
+.tags
+.netrwhist
+.session
+Session.vim
+__pycache__/
+
+# === Neovim LSP ===
+.clangd
+.cache/
+.lsp/
+.nvim/
+
+# === Logs & debug ===
+*.log
+*.trace
+core
+vgcore.*
+*.stackdump
+
+# === Misc ===
+*.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+*.old
+
+# === Package manager ===
+.vscode/
+.idea/
