@@ -1,4 +1,5 @@
 #include "api.h"
+#include "json_object.h"
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include <json-c/json.h>
@@ -14,7 +15,8 @@ typedef struct MemoryRegister {
     size_t size;
 } MemoryRegister;
 
-void api_perform_call(const char* null);
+json_object* api_perform_call(const char* url);
+StockValue* api_parse_json_as_stock(const json_object* response);
 
 StockValue* api_get_stock_value(const char* ticker){
     size_t size = snprintf(nullptr, 0, API_URL, ticker);
@@ -27,7 +29,13 @@ StockValue* api_get_stock_value(const char* ticker){
     snprintf(url, size + 1, API_URL, ticker);
     
     printf("Performing API call for URL: %s\n", url);
-    api_perform_call(url);
+    json_object* result = api_perform_call(url);
+    if(result){
+        StockValue* stock = api_parse_json_as_stock(result);
+        free(result);
+
+        return stock;
+    }
 
     return nullptr;
 }
@@ -49,7 +57,7 @@ static size_t api_write_memory_callback(void *contents, size_t size, size_t nmem
     return realsize;
 }
 
-void api_perform_call(const char* url)
+json_object* api_perform_call(const char* url)
 {
     CURL* handle;
     CURLcode result;
@@ -66,14 +74,44 @@ void api_perform_call(const char* url)
     curl_easy_setopt(handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
 
     result = curl_easy_perform(handle);
+    json_object* jsonObject = nullptr;
     if(result != CURLE_OK){
         fprintf(stderr, "Stock API call failed for URL: %s. Error: %s\n", url, curl_easy_strerror(result));
     }
     else{
-        json_object* jsonObject = json_tokener_parse(reg.data);
-        printf("JSON from Stock API call:\n %s \n", json_object_to_json_string_ext(jsonObject, JSON_C_TO_STRING_SPACED | JSON_C_TO_STRING_PRETTY));
+        jsonObject = json_tokener_parse(reg.data);
+        //printf("JSON from Stock API call:\n %s \n", json_object_to_json_string_ext(jsonObject, JSON_C_TO_STRING_SPACED | JSON_C_TO_STRING_PRETTY));
     }
 
     curl_easy_cleanup(handle);
     free(reg.data);
+
+    return jsonObject;
+}
+
+StockValue* api_parse_json_as_stock(const json_object* response){
+    if(!response){
+        return nullptr;
+    }
+
+    json_object* chart;
+    if(json_object_object_get_ex(response, "chart", &chart)){
+        json_object* result;
+        if(json_object_object_get_ex(chart, "result", &result)){
+            json_object* root = json_object_array_get_idx(result, 0);
+            json_object* meta;
+            if(json_object_object_get_ex(root, "meta", &meta)){
+                StockValue* stockValue = malloc(sizeof(StockValue));
+                stockValue->currency = strdup(json_object_get_string(json_object_object_get(meta, "currency")));
+                stockValue->symbol = strdup(json_object_get_string(json_object_object_get(meta, "symbol")));
+                stockValue->regularMarketPrice = json_object_get_double(json_object_object_get(meta, "regularMarketPrice"));
+                stockValue->previousClose = json_object_get_double(json_object_object_get(meta, "previousClose"));
+
+                return stockValue;
+            }
+        }
+    }
+
+    fprintf(stderr, "Unable to parse JSON from Stock API.\n");
+    return nullptr;
 }
