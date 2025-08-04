@@ -9,5 +9,6 @@ typedef struct StockValue{
 } StockValue;
 
 StockValue* api_get_stock_value(const char* ticker);
+void api_free_stock_value(StockValue* value);
 
 #endif

@@ -1,6 +1,5 @@
 #include "api.h"
 #include <curl/curl.h>
-#include <stdlib.h>
 
 int main(){
     curl_global_init(CURL_GLOBAL_ALL);
@@ -9,7 +8,7 @@ int main(){
     if(stock){
         printf("Stock current information: \n-> Symbol: %s\n-> Currency: %s\n-> Regular Market Price: %f\n-> Previous Close: %f\n", 
                stock->symbol, stock->currency, stock->regularMarketPrice, stock->previousClose);
-        free(stock);
+        api_free_stock_value(stock);
     }
 
     curl_global_cleanup();

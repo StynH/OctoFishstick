@@ -32,7 +32,6 @@ StockValue* api_get_stock_value(const char* ticker){
     json_object* result = api_perform_call(url);
     if(result){
         StockValue* stock = api_parse_json_as_stock(result);
-        free(result);
 
         return stock;
     }
@@ -87,6 +86,14 @@ json_object* api_perform_call(const char* url)
     free(reg.data);
 
     return jsonObject;
+}
+
+void api_free_stock_value(StockValue* value){
+    if(value){
+        free(value->currency);
+        free(value->symbol);
+        free(value);
+    }
 }
 
 StockValue* api_parse_json_as_stock(const json_object* response){
