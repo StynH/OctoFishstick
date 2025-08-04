@@ -20,13 +20,19 @@ add_definitions(${GTK4_CFLAGS_OTHER})
 find_package(CURL REQUIRED)
 include_directories(${CURL_INCLUDE_DIRS})
 
+pkg_check_modules(JSONC REQUIRED json-c)
+include_directories(${JSONC_INCLUDE_DIRS})
+link_directories(${JSONC_LIBRARY_DIRS})
+add_definitions(${JSONC_CFLAGS_OTHER})
+
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/*.c"
 )
 
-add_executable(my_c_project ${SOURCES})
+add_executable(OctoFishstick ${SOURCES})
 
-target_link_libraries(my_c_project
+target_link_libraries(OctoFishstick
     ${GTK4_LIBRARIES}
     ${CURL_LIBRARIES}
+    ${JSONC_LIBRARIES}
 )

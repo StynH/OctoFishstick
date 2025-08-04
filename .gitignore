@@ -34,7 +34,6 @@ Session.vim
 __pycache__/
 
 # === Neovim LSP ===
-.clangd
 .cache/
 .lsp/
 .nvim/
