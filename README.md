@@ -1,4 +1,4 @@
-# OctoFishstick
+# <img src="./icon.ico" alt="Icon" width="96" height="96"> OctoFishstick
 A stock tracking application I build to further learn industry standard C, GTK and Data-Driven Design.
 
 ## Built With
