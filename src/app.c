@@ -11,7 +11,7 @@ GtkApplication* app_create(){
 
 int app_run(GtkApplication* app){
     int status = g_application_run(G_APPLICATION(app), 0, nullptr);
-    g_object_ref(app);
+    g_object_unref(app);
 
     app_cleanup();
     return status;
