@@ -7,6 +7,7 @@ A stock tracking application I build to further learn industry standard C, GTK a
 |------------------|---------------------|
 | Language         | C23                 |
 | GUI Toolkit      | GTK 4               |
+| Chart Toolkit    | live-chart-c        |
 | Networking       | libcurl             |
 | JSON Handling    | json-c              |
 | Build System     | CMake               |

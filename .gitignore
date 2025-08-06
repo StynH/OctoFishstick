@@ -55,3 +55,4 @@ Thumbs.db
 # === Package manager ===
 .vscode/
 .idea/
+/external
