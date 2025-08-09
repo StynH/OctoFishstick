@@ -1,18 +1,21 @@
 #include "api.h"
-#include "glib-object.h"
 #include "glib.h"
+#include "actions.h"
 #include <assert.h>
 #include <gtk/gtk.h>
 #include <livechart.h>
 
 static const char* const APP_TITLE = "OctoFishstick";
-static const int WINDOW_WIDTH = 768;
-static const int WINDOW_HEIGHT = 512;
+static const int WINDOW_WIDTH = 1024;
+static const int WINDOW_HEIGHT = 768;
+static const int SIDEBAR_WIDTH = 128;
+static const int SPACING = 12;
 
 static void window_activate(GtkApplication* app, gpointer user_data);
 static void window_initialize_layout(GtkWindow* window);
 
 static void window_fetch_data_click(GtkWidget* widget, gpointer data);
+static void window_initialize_main_panel(GtkBox* container);
 
 void window_initialize(GtkApplication* app){
     g_signal_connect(app, "activate", G_CALLBACK(window_activate), nullptr);
@@ -22,31 +25,42 @@ static void window_activate(GtkApplication* app, gpointer user_data){
     GtkWidget* window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(window), APP_TITLE);
     gtk_window_set_default_size(GTK_WINDOW(window), WINDOW_WIDTH, WINDOW_HEIGHT);
-    
+
     window_initialize_layout(GTK_WINDOW(window));
     gtk_window_present(GTK_WINDOW(window));
 }
 
 static void window_initialize_layout(GtkWindow* window){
-    GtkWidget* box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_widget_set_halign(box, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(box, GTK_ALIGN_CENTER);
+    GtkWidget* paned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
+    gtk_widget_set_hexpand(paned, true);
+    gtk_widget_set_vexpand(paned, true);
+    gtk_window_set_child(window, paned);
 
-    gtk_window_set_child(window, box);
+    GtkWidget* sidepanel = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING);
+    gtk_widget_set_size_request(sidepanel, SIDEBAR_WIDTH, -1);
 
-    //GtkWidget* button = gtk_button_new_with_label("Fetch data");
-    //g_signal_connect(button, "clicked", G_CALLBACK(window_fetch_data_click), nullptr);
+    GtkWidget* main = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING);
+    gtk_widget_set_hexpand(main, true);
+    gtk_widget_set_vexpand(main, true);
 
-    //gtk_box_append(GTK_BOX(box), button);
+    gtk_paned_set_start_child(GTK_PANED(paned), sidepanel);
+    gtk_paned_set_end_child  (GTK_PANED(paned), main);
 
-    //TODO: Testing the LiveChart libraryi
+    gtk_paned_set_shrink_start_child(GTK_PANED(paned), false);
+    gtk_paned_set_shrink_end_child  (GTK_PANED(paned), false);
+
+    gtk_paned_set_resize_end_child(GTK_PANED(paned), true);
+    gtk_paned_set_position(GTK_PANED(paned), SIDEBAR_WIDTH);
+
+    actions_sidepanel_initialize(sidepanel);
+    window_initialize_main_panel(GTK_BOX(main));
+}
+
+static void window_initialize_main_panel(GtkBox* container){
+    //TODO: Testing the LiveChart library
     LiveChartConfig* config = live_chart_config_new();
 
     LiveChartStaticStaticChart* chart = live_chart_static_static_chart_new(config);
-
-    gtk_widget_set_vexpand(GTK_WIDGET(chart), true);
-    gtk_widget_set_hexpand(GTK_WIDGET(chart), true);
-
     LiveChartStaticStaticValues* values = live_chart_static_static_values_new();
     LiveChartStaticStaticLine* renderer = live_chart_static_static_line_new(values);
     LiveChartStaticStaticSerie* heap = live_chart_static_static_serie_new("HEAP", 
@@ -65,10 +79,12 @@ static void window_initialize_layout(GtkWindow* window){
     live_chart_static_static_serie_add(heap, "mexico", 0);
     live_chart_static_static_serie_add(heap, "seville", 3000);
 
-    gtk_widget_set_size_request(GTK_WIDGET(chart), WINDOW_WIDTH, WINDOW_HEIGHT);
-    live_chart_config_set_width(config, WINDOW_WIDTH);
-    live_chart_config_set_height(config, WINDOW_HEIGHT);
-    gtk_box_append(GTK_BOX(box), GTK_WIDGET(chart));
+    gtk_widget_set_hexpand(GTK_WIDGET(chart), true);
+    gtk_widget_set_vexpand(GTK_WIDGET(chart), true);
+    gtk_widget_set_halign(GTK_WIDGET(chart), GTK_ALIGN_FILL);
+    gtk_widget_set_valign(GTK_WIDGET(chart), GTK_ALIGN_FILL);
+
+    gtk_box_append(GTK_BOX(container), GTK_WIDGET(chart));
 }
 
 //TODO: Temporary
