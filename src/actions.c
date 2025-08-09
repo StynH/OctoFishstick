@@ -1,3 +1,4 @@
+#include "actions/action_add_ticker.h"
 #include "glib-object.h"
 #include "glib.h"
 #include <gtk/gtk.h>
@@ -8,7 +9,7 @@ typedef struct ActionButton{
 } ActionButton;
 
 void actions_add_ticker(GtkWidget* widget, gpointer* user_data){
-    printf("TODO!\n");
+    action_add_ticker_perform();
 }
 
 void actions_sidepanel_initialize(GtkWidget* container){

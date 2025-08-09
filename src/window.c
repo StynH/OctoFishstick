@@ -86,20 +86,3 @@ static void window_initialize_main_panel(GtkBox* container){
 
     gtk_box_append(GTK_BOX(container), GTK_WIDGET(chart));
 }
-
-//TODO: Temporary
-static gpointer window_api_fetch(gpointer data){
-    StockValue* stock = api_get_stock_value("XAIX.DE");
-    if(stock){
-        printf("Stock current information: \n-> Symbol: %s\n-> Currency: %s\n-> Regular Market Price: %f\n-> Previous Close: %f\n", 
-               stock->symbol, stock->currency, stock->regularMarketPrice, stock->previousClose);
-        api_free_stock_value(stock);
-    }
-    return nullptr;
-}
-
-//TODO: Temporary
-static void window_fetch_data_click(GtkWidget* widget, gpointer data){
-    g_print("Fetching data.");
-    g_thread_new("api-fetch-task", window_api_fetch, nullptr);
-}
