@@ -2,7 +2,6 @@
 #include "glib.h"
 #include "actions.h"
 #include "gtk/gtkshortcut.h"
-#include "views/add_ticker_dialog.h"
 #include <assert.h>
 #include <gtk/gtk.h>
 #include <livechart.h>

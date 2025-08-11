@@ -15,8 +15,8 @@ typedef struct MemoryRegister {
     size_t size;
 } MemoryRegister;
 
-json_object* api_perform_call(const char* url);
-StockValue* api_parse_json_as_stock(const json_object* response);
+static json_object* api_perform_call(const char* url);
+static StockValue* api_parse_json_as_stock(const json_object* response);
 
 StockValue* api_get_stock_value(const char* ticker){
     size_t size = snprintf(nullptr, 0, API_URL, ticker);
@@ -39,6 +39,14 @@ StockValue* api_get_stock_value(const char* ticker){
     return nullptr;
 }
 
+void api_free_stock_value(StockValue* value){
+    if(value){
+        free(value->currency);
+        free(value->symbol);
+        free(value);
+    }
+}
+
 static size_t api_write_memory_callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
     size_t realsize = size * nmemb;
@@ -56,47 +64,36 @@ static size_t api_write_memory_callback(void *contents, size_t size, size_t nmem
     return realsize;
 }
 
-json_object* api_perform_call(const char* url)
+static json_object* api_perform_call(const char* url)
 {
-    CURL* handle;
-    CURLcode result;
-
     MemoryRegister reg = {
         .data = nullptr,
         .size = 0
     };
 
-    handle = curl_easy_init();
+    CURL* handle = curl_easy_init();
     curl_easy_setopt(handle, CURLOPT_URL, url);
     curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, api_write_memory_callback);
     curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void*)&reg);
     curl_easy_setopt(handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
 
-    result = curl_easy_perform(handle);
-    json_object* jsonObject = nullptr;
+    CURLcode result = curl_easy_perform(handle);
+    json_object* json_obj = nullptr;
     if(result != CURLE_OK){
         fprintf(stderr, "Stock API call failed for URL: %s. Error: %s\n", url, curl_easy_strerror(result));
     }
     else{
-        jsonObject = json_tokener_parse(reg.data);
+        json_obj = json_tokener_parse(reg.data);
         //printf("JSON from Stock API call:\n %s \n", json_object_to_json_string_ext(jsonObject, JSON_C_TO_STRING_SPACED | JSON_C_TO_STRING_PRETTY));
     }
 
     curl_easy_cleanup(handle);
     free(reg.data);
 
-    return jsonObject;
+    return json_obj;
 }
 
-void api_free_stock_value(StockValue* value){
-    if(value){
-        free(value->currency);
-        free(value->symbol);
-        free(value);
-    }
-}
-
-StockValue* api_parse_json_as_stock(const json_object* response){
+static StockValue* api_parse_json_as_stock(const json_object* response){
     if(!response){
         return nullptr;
     }
@@ -108,13 +105,13 @@ StockValue* api_parse_json_as_stock(const json_object* response){
             json_object* root = json_object_array_get_idx(result, 0);
             json_object* meta;
             if(json_object_object_get_ex(root, "meta", &meta)){
-                StockValue* stockValue = malloc(sizeof(StockValue));
-                stockValue->currency = strdup(json_object_get_string(json_object_object_get(meta, "currency")));
-                stockValue->symbol = strdup(json_object_get_string(json_object_object_get(meta, "symbol")));
-                stockValue->regularMarketPrice = json_object_get_double(json_object_object_get(meta, "regularMarketPrice"));
-                stockValue->previousClose = json_object_get_double(json_object_object_get(meta, "previousClose"));
+                StockValue* stock_value = malloc(sizeof(StockValue));
+                stock_value->currency = strdup(json_object_get_string(json_object_object_get(meta, "currency")));
+                stock_value->symbol = strdup(json_object_get_string(json_object_object_get(meta, "symbol")));
+                stock_value->regularMarketPrice = json_object_get_double(json_object_object_get(meta, "regularMarketPrice"));
+                stock_value->previousClose = json_object_get_double(json_object_object_get(meta, "previousClose"));
 
-                return stockValue;
+                return stock_value;
             }
         }
     }
