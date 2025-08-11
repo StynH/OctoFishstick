@@ -10,6 +10,9 @@ gpointer ticker_fetch(const char* ticker){
                stock->symbol, stock->currency, stock->regularMarketPrice, stock->previousClose);
         api_free_stock_value(stock);
     }
+    else{
+        printf("Stock with symbol '%s' not found.\n", ticker);
+    }
 
     return nullptr;
 }

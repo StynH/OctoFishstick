@@ -32,10 +32,9 @@ StockValue* api_get_stock_value(const char* ticker){
     json_object* result = api_perform_call(url);
     if(result){
         StockValue* stock = api_parse_json_as_stock(result);
-
         return stock;
     }
-
+    
     return nullptr;
 }
 
@@ -102,6 +101,11 @@ static StockValue* api_parse_json_as_stock(const json_object* response){
     if(json_object_object_get_ex(response, "chart", &chart)){
         json_object* result;
         if(json_object_object_get_ex(chart, "result", &result)){
+            //If the given ticker does not exist on Yahoo, it returns 'result' as null.
+            if(!result){
+                return nullptr;
+            }
+
             json_object* root = json_object_array_get_idx(result, 0);
             json_object* meta;
             if(json_object_object_get_ex(root, "meta", &meta)){
