@@ -1,8 +1,8 @@
 #ifndef OCTO_FISHSTICK_WINDOW
 #define OCTO_FISHSTICK_WINDOW
 
-#include "gtk/gtk.h"
+#include "app.h"
 
-void window_initialize(GtkApplication* app);
+void window_initialize(AppCtx* context);
 
 #endif

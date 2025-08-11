@@ -1,9 +1,12 @@
-#include "api.h"
+#include "app.h"
 #include "glib.h"
 #include "actions.h"
+#include "gtk/gtkshortcut.h"
+#include "views/add_ticker_dialog.h"
 #include <assert.h>
 #include <gtk/gtk.h>
 #include <livechart.h>
+#include <string.h>
 
 static const char* const APP_TITLE = "OctoFishstick";
 static const int WINDOW_WIDTH = 1024;
@@ -12,25 +15,35 @@ static const int SIDEBAR_WIDTH = 128;
 static const int SPACING = 12;
 
 static void window_activate(GtkApplication* app, gpointer user_data);
-static void window_initialize_layout(GtkWindow* window);
+static void window_initialize_layout(GtkWindow* window, AppCtx* context);
 
 static void window_fetch_data_click(GtkWidget* widget, gpointer data);
-static void window_initialize_main_panel(GtkBox* container);
+static void window_initialize_sidepanel(GtkWidget* container, AppCtx* context);
+static void window_initialize_main_panel(GtkWidget* container);
 
-void window_initialize(GtkApplication* app){
-    g_signal_connect(app, "activate", G_CALLBACK(window_activate), nullptr);
+typedef struct ActionButton{
+    const char* text;
+    void (*handler)(GtkWidget* widget, gpointer user_data);
+} ActionButton;
+
+void window_initialize(AppCtx* context){
+    g_signal_connect(context->app, "activate", G_CALLBACK(window_activate), context);
 }
 
 static void window_activate(GtkApplication* app, gpointer user_data){
+    AppCtx* context = user_data;
+
     GtkWidget* window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(window), APP_TITLE);
     gtk_window_set_default_size(GTK_WINDOW(window), WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    window_initialize_layout(GTK_WINDOW(window));
+    window_initialize_layout(GTK_WINDOW(window), context);
+    context->ui.main_window = GTK_WINDOW(window);
+
     gtk_window_present(GTK_WINDOW(window));
 }
 
-static void window_initialize_layout(GtkWindow* window){
+static void window_initialize_layout(GtkWindow* window, AppCtx* context){
     GtkWidget* paned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
     gtk_widget_set_hexpand(paned, true);
     gtk_widget_set_vexpand(paned, true);
@@ -52,11 +65,11 @@ static void window_initialize_layout(GtkWindow* window){
     gtk_paned_set_resize_end_child(GTK_PANED(paned), true);
     gtk_paned_set_position(GTK_PANED(paned), SIDEBAR_WIDTH);
 
-    actions_sidepanel_initialize(sidepanel);
-    window_initialize_main_panel(GTK_BOX(main));
+    window_initialize_sidepanel(sidepanel, context);
+    window_initialize_main_panel(main);
 }
 
-static void window_initialize_main_panel(GtkBox* container){
+static void window_initialize_main_panel(GtkWidget* container){
     //TODO: Testing the LiveChart library
     LiveChartConfig* config = live_chart_config_new();
 
@@ -85,4 +98,22 @@ static void window_initialize_main_panel(GtkBox* container){
     gtk_widget_set_valign(GTK_WIDGET(chart), GTK_ALIGN_FILL);
 
     gtk_box_append(GTK_BOX(container), GTK_WIDGET(chart));
+}
+
+static void window_add_ticker(GtkWidget* widget, gpointer user_data){
+    action_call(widget, ACTION_ADD_TICKER, user_data);
+}
+
+static void window_initialize_sidepanel(GtkWidget* container, AppCtx* context){
+    ActionButton buttons[] = {
+        { "Add Ticker", window_add_ticker }
+    };
+
+    for(size_t i = 0; i < sizeof(buttons)/sizeof(buttons[0]); ++i){
+        ActionButton action_button = buttons[i];
+        GtkWidget* button = gtk_button_new_with_label(action_button.text);
+        g_signal_connect(button, "clicked", G_CALLBACK(action_button.handler), context);
+
+        gtk_box_append(GTK_BOX(container), button);
+    }
 }

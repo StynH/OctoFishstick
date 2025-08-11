@@ -1,27 +1,34 @@
-#include "actions/action_add_ticker.h"
-#include "glib-object.h"
+#include "actions.h"
+#include "app.h"
 #include "glib.h"
+#include "views/add_ticker_dialog.h"
 #include <gtk/gtk.h>
 
-typedef struct ActionButton{
-    const char* text;
-    void (*handler)(GtkWidget* widget, gpointer* user_data);
-} ActionButton;
+typedef struct ActionFn{
+    ACTION id;
+    void (*callback)(GtkWidget* caller, gpointer user_data);
+} ActionFn;
 
-void actions_add_ticker(GtkWidget* widget, gpointer* user_data){
-    action_add_ticker_perform();
-}
+static void action_add_ticker(GtkWidget* caller, gpointer user_data);
 
-void actions_sidepanel_initialize(GtkWidget* container){
-    ActionButton buttons[] = {
-        { "Add Ticker", actions_add_ticker }
-    };
+static ActionFn action_table[] = {
+    { ACTION_ADD_TICKER, action_add_ticker }
+};
 
-    for(size_t i = 0; i < sizeof(buttons)/sizeof(buttons[0]); ++i){
-        ActionButton action_button = buttons[i];
-        GtkWidget* button = gtk_button_new_with_label(action_button.text);
-        g_signal_connect(button, "clicked", G_CALLBACK(action_button.handler), nullptr);
-
-        gtk_box_append(GTK_BOX(container), button);
+void action_call(GtkWidget* caller, ACTION action, gpointer user_data){
+    const size_t action_table_size = sizeof(action_table) / sizeof(action_table[0]);
+    for(size_t i = 0; i < action_table_size; ++i){
+        if(action_table[i].id == action){
+            action_table[i].callback(caller, user_data);
+            return;
+        }
     }
 }
+
+static void action_add_ticker(GtkWidget* caller, gpointer user_data){
+    AppCtx* context = user_data;
+
+    GtkWindow* add_ticker_dialog = GTK_WINDOW(add_ticker_dialog_create(context));
+    gtk_window_present(add_ticker_dialog);
+}
+
