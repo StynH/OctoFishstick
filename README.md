@@ -10,7 +10,7 @@ A stock tracking application I build to further learn industry standard C, GTK a
 | Chart Toolkit    | live-chart-c        |
 | Networking       | libcurl             |
 | JSON Handling    | json-c              |
-| Build System     | CMake               |
-| Compiler Tooling | Meson + Clangd      |
+| Build System     | Meson               |
+| Compiler Tooling | Clang + Clangd      |
 | Editor           | NeoVim              |
 | Architecture     | Data-Driven Design  |
