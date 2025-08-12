@@ -1,2 +1,1 @@
-cd build
-cmake .. && make -j$(nproc)
+meson compile -C build
