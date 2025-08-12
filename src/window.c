@@ -2,6 +2,7 @@
 #include "glib.h"
 #include "actions.h"
 #include "gtk/gtkshortcut.h"
+#include "src/resources.h"
 #include <assert.h>
 #include <gtk/gtk.h>
 #include <livechart.h>
@@ -30,6 +31,8 @@ void window_initialize(AppCtx* context){
 
 static void window_activate(GtkApplication* app, gpointer user_data){
     AppCtx* context = user_data;
+
+    resources_load_css();
 
     GtkWidget* window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(window), APP_TITLE);

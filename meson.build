@@ -8,25 +8,26 @@ if cc.get_id() == 'clang'
   add_project_arguments('-Wall', '-Wextra', '-Wpedantic', '-Werror', language: 'c')
 endif
 
-inc = include_directories('include', 'external/live-chart-c')
-
 deps = [
   dependency('gtk4', required: true),
-  dependency('gee-0.8', required: true),
   dependency('glib-2.0', required: true),
   dependency('gobject-2.0', required: true),
   dependency('cairo', required: true),
   dependency('json-c', required: true),
   dependency('libcurl', required: true),
+  dependency('gee-0.8', required: true),
 ]
 
+livechart_inc = include_directories('external/live-chart-c')
 livechart_dir = join_paths(meson.project_source_root(), 'external', 'live-chart-c')
-livechart = cc.find_library('livechart', dirs: [livechart_dir], static: true, required: true)
+livechart     = cc.find_library('livechart', dirs: [livechart_dir], required: true)
+
 libm = cc.find_library('m', required: false)
 
 sources = files(
   'src/actions.c',
   'src/api.c',
+  'src/resources.c',
   'src/app.c',
   'src/main.c',
   'src/ticker.c',
@@ -40,8 +41,7 @@ if libm.found()
 endif
 
 executable('OctoFishstick', sources,
-  include_directories: inc,
   dependencies: all_deps,
+  include_directories: [livechart_inc],
   install: false,
 )
-

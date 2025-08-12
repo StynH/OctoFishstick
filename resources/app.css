@@ -1,0 +1,10 @@
+window {
+  background: #0f1115;
+}
+
+button.primary {
+  background: #3b82f6;
+  color: white;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
