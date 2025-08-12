@@ -6,5 +6,7 @@ Diagnostics:
 
 InlayHints:
   Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
 
 FallbackFlags: [-Wall, -Wextra, -std=c23]

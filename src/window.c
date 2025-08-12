@@ -16,7 +16,6 @@ static const int SPACING = 12;
 static void window_activate(GtkApplication* app, gpointer user_data);
 static void window_initialize_layout(GtkWindow* window, AppCtx* context);
 
-static void window_fetch_data_click(GtkWidget* widget, gpointer data);
 static void window_initialize_sidepanel(GtkWidget* container, AppCtx* context);
 static void window_initialize_main_panel(GtkWidget* container);
 

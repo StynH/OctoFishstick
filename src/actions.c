@@ -25,7 +25,7 @@ void action_call(GtkWidget* caller, ACTION action, gpointer user_data){
     }
 }
 
-static void action_add_ticker(GtkWidget* caller, gpointer user_data){
+static void action_add_ticker(GtkWidget* caller [[__maybe_unused__]], gpointer user_data){
     AppCtx* context = user_data;
 
     GtkWindow* add_ticker_dialog = GTK_WINDOW(add_ticker_dialog_create(context));
