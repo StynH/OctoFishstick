@@ -1,0 +1,6 @@
+<gresources>
+  <gresource prefix="/com/octofishstick">
+    <file>css/app.css</file>
+  </gresource>
+</gresources>
+

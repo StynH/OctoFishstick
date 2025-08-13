@@ -3,6 +3,7 @@ project('OctoFishstick', 'c',
   default_options: ['c_std=c23', 'buildtype=debugoptimized', 'warning_level=3'],
 )
 
+gnome = import('gnome')
 cc = meson.get_compiler('c')
 if cc.get_id() == 'clang'
   add_project_arguments('-Wall', '-Wextra', '-Wpedantic', '-Werror', language: 'c')
@@ -40,7 +41,14 @@ if libm.found()
   all_deps += libm
 endif
 
-executable('OctoFishstick', sources,
+gresources = gnome.compile_resources(
+  'octofishstick-resources',
+  'resources/octofishstick.gresource.xml',
+  source_dir: 'resources',
+  c_name: 'octo_fishstick'
+)
+
+executable('OctoFishstick', sources + gresources,
   dependencies: all_deps,
   include_directories: [livechart_inc],
   install: false,

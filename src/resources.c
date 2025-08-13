@@ -1,14 +1,13 @@
 #include <gtk/gtk.h>
 #include "src/resources.h"
+#include "gtk/gtkcssprovider.h"
 
-#define CSS_FILE_NAME "./resources/app.css"
+#define CSS_RESOURCE_NAME "/com/octofishstick/css/app.css"
 
 void resources_load_css(){
     GtkCssProvider *provider = gtk_css_provider_new();
 
-    GFile* file = g_file_new_for_path(CSS_FILE_NAME);
-    gtk_css_provider_load_from_file(provider, file);
-    g_object_unref(file);
+    gtk_css_provider_load_from_resource(provider, CSS_RESOURCE_NAME);
 
     gtk_style_context_add_provider_for_display(
         gdk_display_get_default(),
