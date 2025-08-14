@@ -33,6 +33,7 @@ sources = files(
   'src/main.c',
   'src/ticker.c',
   'src/views/add_ticker_dialog.c',
+  'src/user.c',
   'src/window.c',
 )
 
