@@ -2,10 +2,12 @@
 #define OCTO_FISHSTICK_APP
 
 #include "gtk/gtk.h"
+#include "user.h"
 #include "ui.h"
 
 typedef struct AppCtx{
     GtkApplication* app;
+    User* user;
     UICtx ui;
 } AppCtx;
 

@@ -3,15 +3,15 @@
 #include "actions.h"
 #include "gtk/gtkshortcut.h"
 #include "src/resources.h"
+#include "src/views/watchlist.h"
 #include <assert.h>
 #include <gtk/gtk.h>
 #include <livechart.h>
-#include <string.h>
 
 static const char* const APP_TITLE = "OctoFishstick";
 static const int WINDOW_WIDTH = 1024;
 static const int WINDOW_HEIGHT = 768;
-static const int SIDEBAR_WIDTH = 128;
+static const int SIDEBAR_WIDTH = 256;
 static const int SPACING = 12;
 
 static void window_activate(GtkApplication* app, gpointer user_data);
@@ -92,18 +92,8 @@ static GtkWidget* window_build_sidepanel(AppCtx* context){
     GtkWidget* sidepanel = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING);
     gtk_widget_set_size_request(sidepanel, SIDEBAR_WIDTH, -1);
 
-    ActionButton buttons[] = {
-        { "Add Ticker", window_add_ticker }
-    };
-
-    for(size_t i = 0; i < sizeof(buttons)/sizeof(buttons[0]); ++i){
-        ActionButton action_button = buttons[i];
-        GtkWidget* button = gtk_button_new_with_label(action_button.text);
-        gtk_widget_add_css_class(button, "primary");
-        g_signal_connect(button, "clicked", G_CALLBACK(action_button.handler), context);
-
-        gtk_box_append(GTK_BOX(sidepanel), button);
-    }
+    GtkWidget* watchlist = watchlist_build_view(context->user);
+    gtk_box_append(GTK_BOX(sidepanel), watchlist);
 
     return sidepanel;
 }

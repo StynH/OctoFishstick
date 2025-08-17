@@ -1,6 +1,6 @@
 #include "add_ticker_dialog.h"
-#include "../ticker.h"
 #include "glib-object.h"
+#include "src/api.h"
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
@@ -91,7 +91,7 @@ static void add_ticker_dialog_add_ticker(GtkWidget* caller, gpointer user_data){
 
 static gpointer add_ticker_dialog_add_ticker_thread(gpointer user_data){
     FetchTickerCtx* context = user_data;
-    ticker_fetch(context->ticker);
+    api_get_stock_value(context->ticker);
     fetch_ticker_ctx_free(context);
     return G_SOURCE_REMOVE;
 }

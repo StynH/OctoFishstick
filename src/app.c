@@ -7,7 +7,7 @@
 static void app_cleanup(AppCtx* context);
 
 GtkApplication* app_create(){
-    return gtk_application_new("org.octofishstick", G_APPLICATION_DEFAULT_FLAGS);
+    return gtk_application_new("org.stynh.octofishstick", G_APPLICATION_DEFAULT_FLAGS);
 }
 
 int app_run(AppCtx* context, int argc, char* argv[]){

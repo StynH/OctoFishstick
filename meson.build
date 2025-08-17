@@ -31,9 +31,9 @@ sources = files(
   'src/resources.c',
   'src/app.c',
   'src/main.c',
-  'src/ticker.c',
-  'src/views/add_ticker_dialog.c',
   'src/user.c',
+  'src/views/add_ticker_dialog.c',
+  'src/views/watchlist.c',
   'src/window.c',
 )
 
