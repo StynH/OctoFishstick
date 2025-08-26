@@ -1,8 +1,18 @@
 window, .header {
-    background: #0f1115;
-    color: #EEE;
+  background: #0F141A;
+  color: #EEE;
 }
 
-.footer label{
-    color: #EEE;
+.footer label {
+  color: #EEE;
+}
+
+.user-watchlist {
+  background: #0F141A;
+  color: #EEE;
+}
+
+.user-watchlist-card {
+  padding: 32px;
+  background: #161D26;
 }

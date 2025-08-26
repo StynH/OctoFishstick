@@ -2,6 +2,9 @@
 #include "gtk/gtk.h"
 #include "src/api.h"
 
+static const char* const WATCHLIST_CLASS = "user-watchlist";
+static const char* const WATCHLIST_CARD_CLASS = "user-watchlist-card";
+
 static GtkWidget* watchlist_card_build_view(const StockValue* stock_value);
 
 void watchlist_refresh_view(GtkListBox* watchlist, const User* user){
@@ -14,7 +17,7 @@ void watchlist_refresh_view(GtkListBox* watchlist, const User* user){
         gtk_list_box_append(watchlist, row);
     }
 
-    gtk_widget_add_css_class(GTK_WIDGET(watchlist), "user-watchlist");
+    gtk_widget_add_css_class(GTK_WIDGET(watchlist), WATCHLIST_CLASS);
 }
 
 GtkWidget* watchlist_build_view(const User* user){
@@ -30,6 +33,7 @@ GtkWidget* watchlist_build_view(const User* user){
 
 static GtkWidget* watchlist_card_build_view(const StockValue* stock_value){
     GtkWidget* box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+    gtk_widget_add_css_class(box, WATCHLIST_CARD_CLASS);
 
     GtkWidget* symbol = gtk_label_new(stock_value->symbol);
     gtk_widget_set_hexpand(symbol, TRUE);

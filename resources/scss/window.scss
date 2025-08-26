@@ -1,0 +1,28 @@
+$background-color: #0F141A;
+$text-color: #EEE;
+
+window, .header 
+{
+    background: $background-color;
+    color: $text-color;
+}
+
+.footer
+{
+    label 
+    {
+        color: $text-color;
+    }
+}
+
+.user-watchlist
+{
+    background: #0F141A;
+    color: $text-color;
+}
+
+.user-watchlist-card
+{
+    padding: 32px;
+    background: #161D26;
+}
