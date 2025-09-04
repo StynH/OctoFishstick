@@ -3,6 +3,9 @@ window, .header {
   color: #EEE;
 }
 
+.footer {
+  padding: 16px;
+}
 .footer label {
   color: #EEE;
 }

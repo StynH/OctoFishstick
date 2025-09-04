@@ -6,6 +6,7 @@
 typedef struct UICtx{
     GtkWindow* main_window;
     GtkWidget* header;
+    GtkWidget* watchlist; //TODO: Not a fan of this.
     GtkWidget* footer;
 } UICtx;
 

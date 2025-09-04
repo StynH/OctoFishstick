@@ -97,6 +97,7 @@ static GtkWidget* window_build_sidepanel(AppCtx* context){
 
     GtkWidget* watchlist = watchlist_build_view(context->user);
     gtk_box_append(GTK_BOX(sidepanel), watchlist);
+    context->ui.watchlist = watchlist;
 
     return sidepanel;
 }

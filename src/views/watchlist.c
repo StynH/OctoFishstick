@@ -11,6 +11,8 @@ void watchlist_refresh_view(GtkListBox* watchlist, const User* user){
     gtk_list_box_invalidate_filter(watchlist);
     gtk_list_box_remove_all(watchlist);
 
+    printf("Refreshing watchlist...\n");
+
     for (size_t i = 0; i < user_watchlist_length(user); ++i) {
         StockValue* ticker = (StockValue*)user_watchlist_at(user, i);
         GtkWidget* row = watchlist_card_build_view(ticker);
@@ -25,6 +27,7 @@ GtkWidget* watchlist_build_view(const User* user){
     gtk_widget_set_vexpand(watchlist, TRUE);
     gtk_widget_set_hexpand(watchlist, TRUE);
     gtk_list_box_set_selection_mode(GTK_LIST_BOX(watchlist), GTK_SELECTION_NONE);
+    gtk_widget_set_name(watchlist, "watchlist");
 
     watchlist_refresh_view(GTK_LIST_BOX(watchlist), user);
 

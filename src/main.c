@@ -1,4 +1,6 @@
+#include "glib.h"
 #include "src/api.h"
+#include "src/background/api_worker.h"
 #include "src/user.h"
 #include "window.h"
 #include <curl/curl.h>
@@ -16,6 +18,9 @@ int main(int argc, char* argv[]){
     user_watchlist_add_ticker(context->user, api_get_stock_value("XAIX.DE"));
     user_watchlist_add_ticker(context->user, api_get_stock_value("VUAA.DE"));
     user_watchlist_add_ticker(context->user, api_get_stock_value("ETH-EUR"));
+
+    //TODO: This can be placed somewhere cleaner?
+    g_timeout_add(60000, api_worker_fetch_tickers, context);
 
     g_print("Creating window...\n");
     window_initialize(context);

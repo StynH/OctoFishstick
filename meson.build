@@ -35,6 +35,7 @@ sources = files(
   'src/views/add_ticker_dialog.c',
   'src/views/watchlist.c',
   'src/window.c',
+  'src/background/api_worker.c'
 )
 
 all_deps = deps + [livechart]

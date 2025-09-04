@@ -6,7 +6,7 @@ typedef struct User{
     GPtrArray* watchlist;
 } User;
 
-void user_free_stock_value(gpointer data);
+static void user_free_stock_value(gpointer data);
 
 User* user_create(){
     User* user = calloc(1, sizeof(*user));
@@ -51,7 +51,7 @@ StockValue* user_watchlist_at(const User* user, size_t index){
     return (StockValue*)g_ptr_array_index(user->watchlist, index);
 }
 
-void user_free_stock_value(gpointer data){
+static void user_free_stock_value(gpointer data){
     assert(data);
 
     StockValue* stock_value = (StockValue*)data;
