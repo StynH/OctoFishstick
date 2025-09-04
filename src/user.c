@@ -6,9 +6,11 @@ typedef struct User{
     GPtrArray* watchlist;
 } User;
 
+void user_free_stock_value(gpointer data);
+
 User* user_create(){
     User* user = calloc(1, sizeof(*user));
-    user->watchlist = g_ptr_array_new_with_free_func(free);
+    user->watchlist = g_ptr_array_new_with_free_func(user_free_stock_value);
 
     return user;
 }
@@ -20,7 +22,9 @@ void user_free(User* user){
 }
 
 static gboolean user_watchlist_compare(gconstpointer left, gconstpointer right){
-    return strcmp((const char*)left, (const char*)right) == 0;
+    StockValue* left_value = (StockValue*)left;
+    StockValue* right_value = (StockValue*)right;
+    return strcmp((const char*)left_value->symbol, (const char*)right_value->symbol) == 0;
 }
 
 void user_watchlist_add_ticker(User* user, StockValue* stock_value){
@@ -45,4 +49,9 @@ StockValue* user_watchlist_at(const User* user, size_t index){
     assert(index < user->watchlist->len);
 
     return (StockValue*)g_ptr_array_index(user->watchlist, index);
+}
+
+void user_free_stock_value(gpointer data){
+    StockValue* stock_value = (StockValue*)data;
+    api_free_stock_value(stock_value);
 }
