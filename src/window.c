@@ -54,6 +54,7 @@ static void window_initialize_layout(GtkWindow* window, AppCtx* context){
 
     GtkWidget* header = window_build_header();
     gtk_window_set_titlebar(window, header);
+    context->ui.header = header;
 
     GtkWidget* paned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
     gtk_widget_set_hexpand(paned, true);
@@ -71,6 +72,7 @@ static void window_initialize_layout(GtkWindow* window, AppCtx* context){
     gtk_paned_set_position(GTK_PANED(paned), SIDEBAR_WIDTH);
 
     GtkWidget* footer = window_build_footer();
+    context->ui.footer = footer;
 
     gtk_box_append(GTK_BOX(root), paned);
     gtk_box_append(GTK_BOX(root), footer);
@@ -85,6 +87,7 @@ static GtkWidget* window_build_header(){
     GtkWidget* text = gtk_label_new("OctoFishstick"); //TODO: Expand with search option for tickers
     gtk_header_bar_set_title_widget(GTK_HEADER_BAR(header), text);
     gtk_widget_add_css_class(header, "header");
+
     return header;
 }
 
@@ -130,6 +133,7 @@ static GtkWidget* window_build_mainpanel(){
     gtk_widget_set_valign(GTK_WIDGET(chart), GTK_ALIGN_FILL);
 
     gtk_box_append(GTK_BOX(main), GTK_WIDGET(chart));
+    
     return main;
 }
 
@@ -140,5 +144,6 @@ static GtkWidget* window_build_footer(){
 
     GtkWidget* text = gtk_label_new("Hello I am footer!");
     gtk_box_append(GTK_BOX(footer), text);
+    
     return footer;
 }

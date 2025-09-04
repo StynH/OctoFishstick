@@ -52,6 +52,8 @@ StockValue* user_watchlist_at(const User* user, size_t index){
 }
 
 void user_free_stock_value(gpointer data){
+    assert(data);
+
     StockValue* stock_value = (StockValue*)data;
     api_free_stock_value(stock_value);
 }

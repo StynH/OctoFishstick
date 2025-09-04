@@ -5,6 +5,8 @@
 
 typedef struct UICtx{
     GtkWindow* main_window;
+    GtkWidget* header;
+    GtkWidget* footer;
 } UICtx;
 
 #endif
