@@ -26,6 +26,7 @@ livechart     = cc.find_library('livechart', dirs: [livechart_dir], required: tr
 libm = cc.find_library('m', required: false)
 
 sources = files(
+  'src/helpers/widget_helpers.c',
   'src/actions.c',
   'src/api.c',
   'src/resources.c',

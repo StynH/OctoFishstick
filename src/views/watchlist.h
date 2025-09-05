@@ -4,7 +4,7 @@
 #include "src/user.h"
 #include <gtk/gtk.h>
 
-void watchlist_refresh_view(GtkListBox* watchlist, const User* user);
+int watchlist_refresh_view(gpointer data);
 GtkWidget* watchlist_build_view(const User* user);
 
 #endif

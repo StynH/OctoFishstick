@@ -6,6 +6,8 @@
 #include <curl/curl.h>
 #include "app.h"
 
+static const int BACKGROUND_WORKER_INTERVAL_IN_MS = 60000;
+
 int main(int argc, char* argv[]){
     curl_global_init(CURL_GLOBAL_ALL);
 
@@ -20,7 +22,7 @@ int main(int argc, char* argv[]){
     user_watchlist_add_ticker(context->user, api_get_stock_value("ETH-EUR"));
 
     //TODO: This can be placed somewhere cleaner?
-    g_timeout_add(60000, api_worker_fetch_tickers, context);
+    g_timeout_add(BACKGROUND_WORKER_INTERVAL_IN_MS, api_worker_fetch_tickers, context);
 
     g_print("Creating window...\n");
     window_initialize(context);
