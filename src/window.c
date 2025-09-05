@@ -143,8 +143,9 @@ static GtkWidget* window_build_footer(){
     gtk_widget_add_css_class(footer, "footer");
     gtk_widget_set_margin_top(footer, 0);
 
-    GtkWidget* text = gtk_label_new("Hello I am footer!");
+    GtkWidget* text = gtk_label_new("Last Update: None");
     gtk_box_append(GTK_BOX(footer), text);
+    gtk_widget_set_name(text, "last_update_label");
     
     return footer;
 }
