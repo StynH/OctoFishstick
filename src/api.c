@@ -1,14 +1,16 @@
 #include "api.h"
 #include "json_object.h"
+#include "json_types.h"
+#include "helpers/string_helpers.h"
+#include <assert.h>
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include <json-c/json.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-static const char* const API_URL = "https://query1.finance.yahoo.com/v8/finance/chart/%s?range=1d&interval=1m";
+static const char* const API_URL = "https://query1.finance.yahoo.com/v8/finance/spark?symbols=%s&range=1d&interval=1m";
 
 typedef struct MemoryRegister {
     char* data;
@@ -18,29 +20,69 @@ typedef struct MemoryRegister {
 static json_object* api_perform_call(const char* url);
 static StockValue* api_parse_json_as_stock(const json_object* response);
 
-StockValue* api_get_stock_value(const char* ticker){
-    size_t size = snprintf(nullptr, 0, API_URL, ticker);
+StockValue* api_get_stock_value(const char* symbol){
+    size_t size = snprintf(nullptr, 0, API_URL, symbol);
     char* url = malloc(size + 1);
 
     if(!url){
         return nullptr;
     }
 
-    snprintf(url, size + 1, API_URL, ticker);
+    snprintf(url, size + 1, API_URL, symbol);
     
-    printf("Performing API call for URL: %s\n", url);
+    printf("[OCTO]: Performing API call for URL: %s\n", url);
     json_object* result = api_perform_call(url);
     if(result){
-        StockValue* stock = api_parse_json_as_stock(result);
-        return stock;
+        json_object* meta;
+        if(json_object_object_get_ex(result, symbol, &meta)){
+            StockValue* stock = api_parse_json_as_stock(meta);
+            printf("[OCTO]: Finished fetching for symbol '%s'\n.", symbol);
+            return stock;
+        }
+
+        printf("[OCTO]: Failed to retrieve metadata for symbol '%s'\n.", symbol);
+        return nullptr;
     }
-    
+
+    printf("[OCTO]: Failed to perform API call.\n");
     return nullptr;
+}
+
+StockValue** api_get_stock_values(const char** symbols, size_t amount_of_symbols){
+    StockValue** stocks = malloc(amount_of_symbols * sizeof(StockValue*));
+    const char* url_symbols = string_join(symbols, amount_of_symbols, ",");
+
+    size_t size = snprintf(nullptr, 0, API_URL, url_symbols);
+    char* url = malloc(size + 1);
+
+    if(!url){
+        return nullptr;
+    }
+
+    snprintf(url, size + 1, API_URL, url_symbols);
+    
+    printf("[OCTO]: Performing API call for URL: %s\n", url);
+    json_object* result = api_perform_call(url);
+    if(result){
+        for(size_t i = 0; i < amount_of_symbols; ++i){
+            const char* symbol = symbols[i];
+
+            json_object* meta;
+            if(json_object_object_get_ex(result, symbol, &meta)){
+                StockValue* stock = api_parse_json_as_stock(meta);
+                stocks[i] = stock;
+            }
+            else{
+                printf("[OCTO]: Failed to retrieve metadata for symbol '%s'\n.", symbol);
+            }
+        }
+    }
+
+    return stocks;
 }
 
 void api_free_stock_value(StockValue* value){
     if(value){
-        free(value->currency);
         free(value->symbol);
         free(value);
     }
@@ -83,7 +125,6 @@ static json_object* api_perform_call(const char* url)
     }
     else{
         json_obj = json_tokener_parse(reg.data);
-        //printf("JSON from Stock API call:\n %s \n", json_object_to_json_string_ext(jsonObject, JSON_C_TO_STRING_SPACED | JSON_C_TO_STRING_PRETTY));
     }
 
     curl_easy_cleanup(handle);
@@ -93,33 +134,11 @@ static json_object* api_perform_call(const char* url)
 }
 
 static StockValue* api_parse_json_as_stock(const json_object* response){
-    if(!response){
-        return nullptr;
-    }
+    assert(response);
 
-    json_object* chart;
-    if(json_object_object_get_ex(response, "chart", &chart)){
-        json_object* result;
-        if(json_object_object_get_ex(chart, "result", &result)){
-            //If the given ticker does not exist on Yahoo, it returns 'result' as null.
-            if(!result){
-                return nullptr;
-            }
+    StockValue* stock_value = malloc(sizeof(StockValue));
+    stock_value->symbol = strdup(json_object_get_string(json_object_object_get(response, "symbol")));
+    stock_value->previousClose = json_object_get_double(json_object_object_get(response, "previousClose"));
 
-            json_object* root = json_object_array_get_idx(result, 0);
-            json_object* meta;
-            if(json_object_object_get_ex(root, "meta", &meta)){
-                StockValue* stock_value = malloc(sizeof(StockValue));
-                stock_value->currency = strdup(json_object_get_string(json_object_object_get(meta, "currency")));
-                stock_value->symbol = strdup(json_object_get_string(json_object_object_get(meta, "symbol")));
-                stock_value->regularMarketPrice = json_object_get_double(json_object_object_get(meta, "regularMarketPrice"));
-                stock_value->previousClose = json_object_get_double(json_object_object_get(meta, "previousClose"));
-
-                return stock_value;
-            }
-        }
-    }
-
-    fprintf(stderr, "Unable to parse JSON from Stock API.\n");
-    return nullptr;
+    return stock_value;
 }

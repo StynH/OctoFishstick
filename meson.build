@@ -26,22 +26,23 @@ livechart     = cc.find_library('livechart', dirs: [livechart_dir], required: tr
 libm = cc.find_library('m', required: false)
 
 sources = files(
-  'src/actions.c',
-  'src/api.c',
-  'src/resources.c',
-  'src/app.c',
-  'src/main.c',
-  'src/user.c',
-  'src/window.c',
+    'src/actions.c',
+    'src/api.c',
+    'src/resources.c',
+    'src/app.c',
+    'src/main.c',
+    'src/user.c',
+    'src/window.c',
 
-  'src/views/add_ticker_dialog.c',
-  'src/views/watchlist.c',
-  'src/views/footer.c',
-  
-  'src/helpers/widget_helpers.c',
-  'src/helpers/time_helpers.c',
+    'src/views/add_ticker_dialog.c',
+    'src/views/watchlist.c',
+    'src/views/footer.c',
 
-  'src/background/api_worker.c'
+    'src/helpers/widget_helpers.c',
+    'src/helpers/time_helpers.c',
+    'src/helpers/string_helpers.c',
+
+    'src/background/api_worker.c'
 )
 
 all_deps = deps + [livechart]
