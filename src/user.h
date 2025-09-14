@@ -12,5 +12,6 @@ void user_free(User* user);
 void user_watchlist_add_ticker(User* user, StockValue* ticker);
 size_t user_watchlist_length(const User* user);
 StockValue* user_watchlist_at(const User* user, size_t index);
+StockValue* user_watchlist_by_symbol(const User* user, const char* symbol);
 
 #endif

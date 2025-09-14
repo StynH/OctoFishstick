@@ -1,6 +1,7 @@
 #include "glib.h"
 #include "src/api.h"
 #include <assert.h>
+#include <string.h>
 
 typedef struct User{
     GPtrArray* watchlist;
@@ -49,6 +50,20 @@ StockValue* user_watchlist_at(const User* user, size_t index){
     assert(index < user->watchlist->len);
 
     return (StockValue*)g_ptr_array_index(user->watchlist, index);
+}
+
+StockValue* user_watchlist_by_symbol(const User* user, const char* symbol){
+    assert(user);
+    assert(symbol);
+
+    for(size_t i = 0; i <= user->watchlist->len; ++i){
+        StockValue* value = user_watchlist_at(user, i);
+        if(strcmp(value->symbol, symbol) == 0){
+            return value;
+        }
+    }
+
+    return nullptr;
 }
 
 static void user_free_stock_value(gpointer data){
