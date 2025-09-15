@@ -25,7 +25,7 @@ gboolean api_worker_fetch_tickers(gpointer data){
         StockValue* fetched_value = fetched_data[i];
         StockValue* old_value = user_watchlist_by_symbol(user, fetched_value->symbol);
         if(old_value == nullptr){
-            printf("[OCTO] Fetched data for symbol '%s' but it was not found in the users watchlist.\n", fetched_value->symbol);
+            printf("[OCTO]: Fetched data for symbol '%s' but it was not found in the users watchlist.\n", fetched_value->symbol);
             continue;
         }
 

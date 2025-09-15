@@ -42,7 +42,9 @@ sources = files(
     'src/helpers/time_helpers.c',
     'src/helpers/string_helpers.c',
 
-    'src/background/api_worker.c'
+    'src/background/api_worker.c',
+
+    'src/storage/local_storage.c'
 )
 
 all_deps = deps + [livechart]

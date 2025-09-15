@@ -1,6 +1,7 @@
 #include "glib.h"
 #include "src/api.h"
 #include "src/background/api_worker.h"
+#include "src/storage/local_storage.h"
 #include "src/user.h"
 #include "window.h"
 #include <curl/curl.h>
@@ -12,6 +13,9 @@ int main(int argc, char* argv[]){
     curl_global_init(CURL_GLOBAL_ALL);
 
     g_print("Starting...\n");
+    
+    local_storage_setup();
+
     AppCtx* context = malloc(sizeof(AppCtx));
     context->app = app_create();
     context->user = user_create();
@@ -34,6 +38,9 @@ int main(int argc, char* argv[]){
 
     g_print("[OCTO]: Creating window...\n");
     window_initialize(context);
+
+    //TODO: Testing
+    local_storage_store_user(context->user);
 
     g_print("[OCTO]: Starting app...\n");
     return app_run(context, argc, argv);
