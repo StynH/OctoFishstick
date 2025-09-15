@@ -30,7 +30,7 @@ gboolean api_worker_fetch_tickers(gpointer data){
         }
 
         //TODO: Feels off to do this.
-        old_value->previousClose = fetched_value->previousClose;
+        old_value->currentPrice = fetched_value->currentPrice;
     }
 
     g_main_context_invoke(

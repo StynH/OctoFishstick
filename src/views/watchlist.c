@@ -46,7 +46,7 @@ int watchlist_refresh_view(gpointer data){
                 }
 
                 char price_str[16];
-                snprintf(price_str, sizeof(price_str), "€%.2f", ticker->previousClose);
+                snprintf(price_str, sizeof(price_str), "€%.2f", ticker->currentPrice);
                 gtk_label_set_text(GTK_LABEL(value_label), price_str);
                 break;
             }
@@ -84,7 +84,7 @@ static GtkWidget* watchlist_card_build_view(const StockValue* stock_value){
     gtk_widget_set_name(symbol, "symbol_label");
 
     char price_str[16];
-    snprintf(price_str, sizeof(price_str), "€%.2f", stock_value->previousClose);
+    snprintf(price_str, sizeof(price_str), "€%.2f", stock_value->currentPrice);
     GtkWidget* price = gtk_label_new(price_str);
     gtk_widget_set_name(price, "value_label");
 

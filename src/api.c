@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static const char* const API_URL = "https://query1.finance.yahoo.com/v8/finance/spark?symbols=%s&range=1d&interval=1m";
+static const char* const API_URL = "https://query1.finance.yahoo.com/v8/finance/spark?symbols=%s&range=2h&interval=1m";
 
 typedef struct MemoryRegister {
     char* data;
@@ -138,7 +138,12 @@ static StockValue* api_parse_json_as_stock(const json_object* response){
 
     StockValue* stock_value = malloc(sizeof(StockValue));
     stock_value->symbol = strdup(json_object_get_string(json_object_object_get(response, "symbol")));
-    stock_value->previousClose = json_object_get_double(json_object_object_get(response, "previousClose"));
+
+    json_object* close_arr_json = json_object_object_get(response, "close");
+    if(close_arr_json != nullptr){
+        size_t close_arr_length = json_object_array_length(close_arr_json);
+        stock_value->currentPrice = json_object_get_double(json_object_array_get_idx(close_arr_json, close_arr_length - 1));
+    }
 
     return stock_value;
 }

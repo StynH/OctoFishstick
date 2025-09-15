@@ -5,7 +5,7 @@
 
 typedef struct StockValue{
     char* symbol;
-    double previousClose;
+    double currentPrice;
 } StockValue;
 
 StockValue* api_get_stock_value(const char* symbol);
